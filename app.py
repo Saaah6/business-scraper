@@ -50,7 +50,7 @@ location = st.text_input(
 if st.button("Search"):
 
     # API URL
-    url = "https://overpass.kumi.systems/api/interpreter"
+   url = "https://overpass-api.de/api/interpreter"
 
     # Dynamic Query
     query = f"""
@@ -58,13 +58,13 @@ if st.button("Search"):
 
     area["name"="{location}"]->.searchArea;
 
-    (
-      node["tourism"="{business_type}"](area.searchArea);
-      way["tourism"="{business_type}"](area.searchArea);
-      relation["tourism"="{business_type}"](area.searchArea);
-    );
+   (
+  node["name"](area.searchArea);
+  way["name"](area.searchArea);
+  relation["name"](area.searchArea);
+);
 
-    out center;
+    out center 50;
     """
 
     # Headers
@@ -79,7 +79,7 @@ if st.button("Search"):
             url,
             params={'data': query},
             headers=headers,
-            timeout=60
+            timeout=350
         )
 
         # Convert response to JSON
@@ -93,12 +93,16 @@ if st.button("Search"):
 
             tags = element.get('tags', {})
 
-            businesses.append({
-                "Name": tags.get("name"),
-                "Phone": tags.get("phone"),
-                "Website": tags.get("website"),
-                "City": tags.get("addr:city")
-            })
+          name = tags.get("name", "")
+
+if business_type.lower() in name.lower():
+
+    businesses.append({
+        "Name": name,
+        "Phone": tags.get("phone"),
+        "Website": tags.get("website"),
+        "City": tags.get("addr:city")
+    })
 
         # DataFrame
         df = pd.DataFrame(businesses)
