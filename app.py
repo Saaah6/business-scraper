@@ -6,7 +6,6 @@ from pathlib import Path
 # -----------------------------
 # PAGE CONFIG
 # -----------------------------
-# -----------------------------
 
 st.set_page_config(
     page_title="Business Scraper",
@@ -67,31 +66,27 @@ out center 600;
         # Request
         response = requests.get(
             url,
-            params={'data': query},
+            params={"data": query},
             headers=headers,
             timeout=350
         )
 
-        # Convert response to JSON
-       if response.status_code == 200:
+        if response.status_code != 200:
+            st.error(f"API Error: {response.status_code}")
+            st.stop()
 
-    try:
-        data = response.json()
-
-    except Exception:
-        st.error("Invalid response from API")
-        st.stop()
-
-else:
-    st.error(f"API Error: {response.status_code}")
-    st.stop()
+        try:
+            data = response.json()
+        except Exception:
+            st.error("Invalid response from API")
+            st.stop()
 
         # Empty list
         businesses = []
 
         # Loop through results
-        for element in data['elements']:
-            tags = element.get('tags', {})
+        for element in data.get("elements", []):
+            tags = element.get("tags", {})
             name = tags.get("name", "")
 
             if business_type.lower() in name.lower():
@@ -109,7 +104,10 @@ else:
         df = df.drop_duplicates()
 
         # Remove empty rows
-        df = df.dropna(how='all')
+        df = df.dropna(how="all")
+
+        if len(df) == 0:
+            st.warning("No businesses found.")
 
         # Success message
         st.success(f"Found {len(df)} businesses")
@@ -118,7 +116,7 @@ else:
         st.dataframe(df)
 
         # CSV Download
-        csv = df.to_csv(index=False).encode('utf-8')
+        csv = df.to_csv(index=False).encode("utf-8")
         st.download_button(
             label="Download CSV",
             data=csv,
@@ -127,24 +125,4 @@ else:
         )
 
     except Exception as e:
-        st.error(f"Error: {e}")
-
-        # Show table
-        if len(businesses) == 0:
-    st.warning("No businesses found.")
-    st.stop()
-        st.dataframe(df)
-
-        # CSV Download
-        csv = df.to_csv(index=False).encode('utf-8')
-
-        st.download_button(
-            label="Download CSV",
-            data=csv,
-            file_name=f"{business_type}_{location}.csv",
-            mime="text/csv"
-        )
-
-    except Exception as e:
-
         st.error(f"Error: {e}")
