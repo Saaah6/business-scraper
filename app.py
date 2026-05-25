@@ -73,7 +73,18 @@ out center 600;
         )
 
         # Convert response to JSON
+       if response.status_code == 200:
+
+    try:
         data = response.json()
+
+    except Exception:
+        st.error("Invalid response from API")
+        st.stop()
+
+else:
+    st.error(f"API Error: {response.status_code}")
+    st.stop()
 
         # Empty list
         businesses = []
@@ -119,6 +130,9 @@ out center 600;
         st.error(f"Error: {e}")
 
         # Show table
+        if len(businesses) == 0:
+    st.warning("No businesses found.")
+    st.stop()
         st.dataframe(df)
 
         # CSV Download
