@@ -87,9 +87,8 @@ out center;
         # Loop through results
         for element in data.get("elements", []):
             tags = element.get("tags", {})
-            name = tags.get("name", "")
-
-            if business_type.lower() in name.lower():
+            name = tags.get("name")
+            if name:
                 businesses.append({
                     "Name": name,
                     "Phone": tags.get("phone"),
