@@ -3,27 +3,56 @@ import pandas as pd
 import streamlit as st
 from pathlib import Path
 
+# -----------------------------
+# PAGE CONFIG
+# -----------------------------
+
 st.set_page_config(
     page_title="Business Scraper",
     layout="wide"
 )
+
+# -----------------------------
+# LOGO
+# -----------------------------
+
 logo_path = Path(__file__).with_name("logo.png")
+
 if logo_path.exists():
-else:
-    st.warning("Logo file not found; continuing without image.")
+    st.image(str(logo_path), width=120)
+
+# -----------------------------
+# TITLE
+# -----------------------------
 
 st.title("Business Scraper Dashboard")
 
-# User Inputs
-business_type = st.text_input("Business Type", "hotel")
-location = st.text_input("Location", "Delhi")
+st.write("Search businesses by type and location.")
 
-# Search Button
+# -----------------------------
+# USER INPUTS
+# -----------------------------
+
+business_type = st.text_input(
+    "Business Type",
+    "hotel"
+)
+
+location = st.text_input(
+    "Location",
+    "Delhi"
+)
+
+# -----------------------------
+# SEARCH BUTTON
+# -----------------------------
+
 if st.button("Search"):
 
+    # API URL
     url = "https://overpass.kumi.systems/api/interpreter"
 
-    # Dynamic query
+    # Dynamic Query
     query = f"""
     [out:json];
 
@@ -38,12 +67,14 @@ if st.button("Search"):
     out center;
     """
 
+    # Headers
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
 
     try:
 
+        # Request
         response = requests.get(
             url,
             params={'data': query},
@@ -51,10 +82,13 @@ if st.button("Search"):
             timeout=60
         )
 
+        # Convert response to JSON
         data = response.json()
 
+        # Empty list
         businesses = []
 
+        # Loop through results
         for element in data['elements']:
 
             tags = element.get('tags', {})
@@ -62,25 +96,31 @@ if st.button("Search"):
             businesses.append({
                 "Name": tags.get("name"),
                 "Phone": tags.get("phone"),
-                "We"
-                "bsite": tags.get("website"),
+                "Website": tags.get("website"),
                 "City": tags.get("addr:city")
             })
 
+        # DataFrame
         df = pd.DataFrame(businesses)
 
+        # Remove duplicates
         df = df.drop_duplicates()
 
+        # Remove empty rows
+        df = df.dropna(how='all')
+
+        # Success message
         st.success(f"Found {len(df)} businesses")
 
+        # Show table
         st.dataframe(df)
 
-        # Download CSV
+        # CSV Download
         csv = df.to_csv(index=False).encode('utf-8')
 
         st.download_button(
-            "Download CSV",
-            csv,
+            label="Download CSV",
+            data=csv,
             file_name=f"{business_type}_{location}.csv",
             mime="text/csv"
         )
