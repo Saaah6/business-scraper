@@ -43,7 +43,7 @@ if st.button("Search"):
     url = "https://overpass.kumi.systems/api/interpreter"
 
     # Dynamic Query
-   query = f"""
+    query = f"""
 [out:json];
 
 area["name"="{location}"]->.searchArea;
