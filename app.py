@@ -40,7 +40,7 @@ location = st.text_input("Location", "Delhi")
 
 if st.button("Search"):
     # API URL
-    url = "https://overpass-api.de/api/interpreter"
+    url = "https://lz4.overpass-api.de/api/interpreter"
 
     # Dynamic Query
     query = f"""
