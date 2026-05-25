@@ -1,7 +1,14 @@
 import streamlit as st
 import requests
 import pandas as pd
+import streamlit as st
 
+st.set_page_config(
+    page_title="Business Scraper",
+    page_icon="logo.png",
+    layout="wide"
+)
+st.image("logo.png", width=100)
 st.title("Business Scraper Dashboard")
 
 # User Inputs
@@ -52,7 +59,8 @@ if st.button("Search"):
             businesses.append({
                 "Name": tags.get("name"),
                 "Phone": tags.get("phone"),
-                "Website": tags.get("website"),
+                "We"
+                "bsite": tags.get("website"),
                 "City": tags.get("addr:city")
             })
 
