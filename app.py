@@ -56,7 +56,6 @@ area["name"="{location}"]->.searchArea;
 
 out tags 50;
 """
-"""
 
     # Headers
     headers = {
