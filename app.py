@@ -40,21 +40,21 @@ location = st.text_input("Location", "Delhi")
 
 if st.button("Search"):
     # API URL
-    url = "https://lz4.overpass-api.de/api/interpreter"
+    url = "https://overpass.kumi.systems/api/interpreter"
 
     # Dynamic Query
-    query = f"""
-[out:json][timeout:25];
+   query = f"""
+[out:json];
 
 area["name"="{location}"]->.searchArea;
 
 (
-  node["name"](area.searchArea);
-  way["name"](area.searchArea);
-  relation["name"](area.searchArea);
+  node["tourism"="{business_type}"](area.searchArea);
+  way["tourism"="{business_type}"](area.searchArea);
+  relation["tourism"="{business_type}"](area.searchArea);
 );
 
-out tags 50;
+out center;
 """
 
     # Headers
@@ -68,7 +68,7 @@ out tags 50;
             url,
             params={"data": query},
             headers=headers,
-            timeout=350
+            timeout=120
         )
 
         if response.status_code != 200:
