@@ -44,7 +44,7 @@ if st.button("Search"):
 
     # Dynamic Query
     query = f"""
-[out:json] [timeout:60];
+[out:json][timeout:25];
 
 area["name"="{location}"]->.searchArea;
 
@@ -54,7 +54,8 @@ area["name"="{location}"]->.searchArea;
   relation["name"](area.searchArea);
 );
 
-out tags 600;
+out tags 50;
+"""
 """
 
     # Headers
