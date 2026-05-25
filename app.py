@@ -55,7 +55,7 @@ area["name"="{location}"]->.searchArea;
   relation["name"](area.searchArea);
 );
 
-out center 300;
+out center 600;
 """
 
     # Headers
