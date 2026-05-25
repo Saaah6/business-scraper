@@ -1,14 +1,17 @@
-import streamlit as st
 import requests
 import pandas as pd
 import streamlit as st
+from pathlib import Path
 
 st.set_page_config(
     page_title="Business Scraper",
-    page_icon="logo.png",
     layout="wide"
 )
-st.image("logo.png", width=100)
+logo_path = Path(__file__).with_name("logo.png")
+if logo_path.exists():
+else:
+    st.warning("Logo file not found; continuing without image.")
+
 st.title("Business Scraper Dashboard")
 
 # User Inputs
